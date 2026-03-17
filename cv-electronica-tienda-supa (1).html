@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Electrónica — Tienda Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#070b14;--surface:#0d1525;--surface2:#131e33;--surface3:#1a2740;
+  --border:#1e3158;--border2:#2a4270;
+  --blue:#1e90ff;--blue-b:#40a8ff;--blue-g:rgba(30,144,255,0.1);
+  --cyan:#00d4ff;--green:#00e676;--warn:#ffab00;--danger:#ff4d6d;--gold:#ffd700;
+  --text:#e8f0fe;--text2:#8fa8cc;--muted:#4a6080;
+  --font:'Barlow',sans-serif;--font-c:'Barlow Condensed',sans-serif;--font-m:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* HEADER */
+header{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.hdr-top{max-width:1280px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.logo-ico{width:38px;height:38px;background:linear-gradient(135deg,var(--blue),var(--cyan));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 18px rgba(30,144,255,.4)}
+.logo-brand{font-family:var(--font-c);font-size:20px;font-weight:900;color:var(--text);line-height:1}
+.logo-tag{font-size:10px;color:var(--blue-b);font-family:var(--font-m);letter-spacing:1px}
+.hdr-search{flex:1;max-width:480px;margin:0 auto;display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0 14px;transition:border-color .2s}
+.hdr-search:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,144,255,.08)}
+.hdr-search input{background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:14px;padding:10px 0;flex:1}
+.hdr-search input::placeholder{color:var(--muted)}
+.cart-btn{display:flex;align-items:center;gap:8px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-family:var(--font);font-weight:700;font-size:14px;cursor:pointer;transition:all .18s;box-shadow:0 0 18px rgba(30,144,255,.3);position:relative;margin-left:auto;flex-shrink:0}
+.cart-btn:hover{background:var(--blue-b);transform:translateY(-1px)}
+.cart-badge{position:absolute;top:-6px;right:-6px;background:var(--danger);color:#fff;font-size:10px;font-weight:800;font-family:var(--font-m);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+
+/* CATS */
+.cats-bar{border-top:1px solid var(--border);overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.cats-bar::-webkit-scrollbar{display:none}
+.cats-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;gap:2px}
+.cat-tab{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);border-bottom:2px solid transparent;transition:all .18s;white-space:nowrap}
+.cat-tab:hover{color:var(--text)}
+.cat-tab.on{color:var(--blue-b);border-bottom-color:var(--blue)}
+
+/* BANNER */
+.banner{background:linear-gradient(135deg,#0a1628,#0d1f3c,#0a1628);border-bottom:1px solid var(--border);padding:28px 24px;text-align:center;position:relative;overflow:hidden}
+.banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(30,144,255,.18),transparent 65%)}
+.banner h1{font-family:var(--font-c);font-size:32px;font-weight:900;position:relative}
+.banner h1 span{color:var(--blue-b)}
+.banner p{color:var(--text2);font-size:13px;margin-top:5px;position:relative}
+
+/* STORE */
+.store-wrap{max-width:1280px;margin:0 auto;padding:24px}
+.store-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.store-hdr h2{font-family:var(--font-c);font-size:22px;font-weight:800}
+.store-hdr span{font-size:12px;font-family:var(--font-m);color:var(--muted)}
+select{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 12px;font-family:var(--font);font-size:13px;cursor:pointer;outline:none}
+
+/* PRODUCTS */
+.prods{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .2s;cursor:pointer;display:flex;flex-direction:column}
+.pcard:hover{border-color:var(--blue);transform:translateY(-3px);box-shadow:0 8px 32px rgba(30,144,255,.12)}
+.pcard-img{height:165px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;overflow:hidden;flex-shrink:0}
+.pcard-img img{width:100%;height:100%;object-fit:cover}
+.sp{position:absolute;top:9px;right:9px;padding:3px 8px;border-radius:6px;font-size:10px;font-family:var(--font-m);font-weight:700}
+.sp.ok{background:rgba(0,230,118,.2);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.sp.low{background:rgba(255,171,0,.2);color:var(--warn);border:1px solid rgba(255,171,0,.3)}
+.sp.out{background:rgba(255,77,109,.2);color:var(--danger);border:1px solid rgba(255,77,109,.3)}
+.pcard-body{padding:13px;display:flex;flex-direction:column;flex:1}
+.pcard-cat{font-size:10px;font-family:var(--font-m);color:var(--blue-b);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.pcard-name{font-size:14px;font-weight:700;line-height:1.3;margin-bottom:5px;flex:1}
+.pcard-desc{font-size:11px;color:var(--text2);line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pcard-price{font-family:var(--font-c);font-size:22px;font-weight:900;color:var(--blue-b);margin-bottom:4px}
+.pcard-cuota{font-size:11px;font-family:var(--font-m);color:var(--green);margin-bottom:8px}
+.add-btn{width:100%;padding:9px;border-radius:8px;background:var(--blue-g);color:var(--blue-b);border:1px solid rgba(30,144,255,.25);font-family:var(--font);font-weight:700;font-size:12px;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:6px}
+.add-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.add-btn.added{background:rgba(0,230,118,.12);color:var(--green);border-color:rgba(0,230,118,.3)}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;padding:60px;color:var(--muted);font-family:var(--font-m);font-size:13px;gap:10px;grid-column:1/-1}
+.spinner{width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(2,8,20,.85);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:92%;max-width:680px;max-height:90vh;overflow-y:auto;transform:scale(.95) translateY(10px);transition:transform .22s;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.overlay.open .modal{transform:scale(1) translateY(0)}
+.modal-x{background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;line-height:1;transition:color .15s;padding:4px}
+.modal-x:hover{color:var(--danger)}
+.det-layout{display:grid;grid-template-columns:1fr 1fr}
+.det-img{height:280px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:90px;border-radius:16px 0 0 0;overflow:hidden}
+.det-img img{width:100%;height:100%;object-fit:cover}
+.det-info{padding:22px;display:flex;flex-direction:column}
+.det-cat{font-size:11px;font-family:var(--font-m);color:var(--blue-b);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.det-name{font-family:var(--font-c);font-size:21px;font-weight:900;line-height:1.2;margin-bottom:7px}
+.det-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px;flex:1}
+.det-price{font-family:var(--font-c);font-size:30px;font-weight:900;color:var(--blue-b);margin-bottom:4px}
+.det-cuota-info{font-size:12px;font-family:var(--font-m);color:var(--green);margin-bottom:10px}
+.det-sku{font-size:11px;font-family:var(--font-m);color:var(--muted);margin-bottom:14px}
+.det-qty{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.dqb{width:30px;height:30px;border-radius:8px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:17px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.dqb:hover{border-color:var(--blue);color:var(--blue)}
+.dqn{font-family:var(--font-m);font-size:16px;font-weight:700;min-width:30px;text-align:center}
+.det-add{width:100%;padding:11px;border-radius:10px;background:var(--blue);color:#fff;border:none;font-family:var(--font);font-weight:800;font-size:14px;cursor:pointer;transition:all .18s;box-shadow:0 0 20px rgba(30,144,255,.3)}
+.det-add:hover{background:var(--blue-b);transform:translateY(-1px)}
+
+/* CART SIDEBAR */
+.cart-sidebar{position:fixed;top:0;right:-420px;width:420px;height:100vh;background:var(--surface);border-left:1px solid var(--border2);z-index:300;display:flex;flex-direction:column;transition:right .28s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 40px rgba(0,0,0,.4)}
+.cart-sidebar.open{right:0}
+.cart-scrim{position:fixed;inset:0;background:rgba(2,8,20,.6);z-index:299;opacity:0;pointer-events:none;transition:opacity .28s;backdrop-filter:blur(2px)}
+.cart-scrim.open{opacity:1;pointer-events:all}
+.cs-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.cs-hdr h3{font-family:var(--font-c);font-size:20px;font-weight:800}
+.cs-items{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:9px}
+.cs-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px;display:flex;align-items:center;gap:9px}
+.csi-ico{width:44px;height:44px;background:var(--surface3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden}
+.csi-ico img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.csi-inf{flex:1}
+.csi-name{font-size:12px;font-weight:600;line-height:1.2}
+.csi-price{font-size:10px;font-family:var(--font-m);color:var(--text2);margin-top:2px}
+.csi-qty{display:flex;align-items:center;gap:4px}
+.cqb{width:22px;height:22px;border-radius:5px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cqb:hover{border-color:var(--blue);color:var(--blue)}
+.cqn{font-family:var(--font-m);font-size:12px;min-width:20px;text-align:center}
+.csi-total{font-family:var(--font-m);font-size:12px;font-weight:700;color:var(--green);min-width:80px;text-align:right}
+.csi-del{color:var(--muted);cursor:pointer;padding:4px;font-size:13px;transition:color .15s}
+.csi-del:hover{color:var(--danger)}
+.cs-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted)}
+.cs-empty .cei{font-size:52px}
+.cs-foot{padding:14px 20px;border-top:1px solid var(--border);flex-shrink:0}
+.cs-line{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:var(--text2)}
+.cs-total{font-family:var(--font-c);font-size:21px;font-weight:900;display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px;margin-top:6px}
+.cs-total span{color:var(--blue-b)}
+.ck-btn{width:100%;padding:13px;border-radius:10px;background:var(--blue);color:#fff;border:none;font-family:var(--font);font-weight:800;font-size:14px;cursor:pointer;transition:all .18s;box-shadow:0 0 20px rgba(30,144,255,.3);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px}
+.ck-btn:hover{background:var(--blue-b);transform:translateY(-1px)}
+
+/* CHECKOUT MODAL */
+.ck-modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:92%;max-width:540px;max-height:92vh;overflow-y:auto;transform:scale(.95);transition:transform .22s;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.overlay.open .ck-modal{transform:scale(1)}
+.ck-hd{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ck-hd h3{font-family:var(--font-c);font-size:20px;font-weight:800}
+.ck-bd{padding:20px 24px}
+.ck-ft{padding:14px 24px;border-top:1px solid var(--border)}
+.fg{margin-bottom:13px}
+.fl{display:block;font-size:11px;font-family:var(--font-m);color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.fi{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;transition:border-color .2s}
+.fi:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,144,255,.08)}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tog-row{display:grid;gap:8px;margin-bottom:13px}
+.tog-row.col2{grid-template-columns:1fr 1fr}
+.tog-row.col3{grid-template-columns:1fr 1fr 1fr}
+.tog{border:1px solid var(--border2);border-radius:10px;padding:11px 8px;text-align:center;cursor:pointer;transition:all .18s;font-size:12px;font-weight:700;color:var(--text2)}
+.tog:hover{border-color:var(--blue);color:var(--blue)}
+.tog.on{border-color:var(--blue);background:var(--blue-g);color:var(--blue-b);box-shadow:0 0 12px rgba(30,144,255,.12)}
+.tog .di{font-size:20px;display:block;margin-bottom:4px}
+.cuotas-wrap{display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:13px}
+.cuotas-wrap.show{display:block}
+.cuotas-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.cuota-opt{border:1px solid var(--border2);border-radius:8px;padding:8px 4px;text-align:center;cursor:pointer;transition:all .15s;font-size:11px;font-weight:700;color:var(--text2)}
+.cuota-opt:hover{border-color:var(--blue);color:var(--blue)}
+.cuota-opt.on{border-color:var(--green);background:rgba(0,230,118,.08);color:var(--green)}
+.cuota-opt .cn{font-size:14px;font-weight:900;display:block}
+.cuota-opt .cv{font-size:9px;font-family:var(--font-m);margin-top:2px;color:var(--muted)}
+.cuota-opt.on .cv{color:var(--green)}
+.recargo-info{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:4px 0}
+.recargo-info strong{color:var(--warn)}
+.order-summary{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:13px;margin-bottom:14px}
+.os-title{font-family:var(--font-c);font-size:13px;font-weight:700;margin-bottom:9px;color:var(--text2)}
+.os-item{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(30,49,88,.4)}
+.os-item:last-child{border-bottom:none}
+.os-total{display:flex;justify-content:space-between;font-family:var(--font-c);font-size:17px;font-weight:800;margin-top:9px;border-top:1px solid var(--border);padding-top:9px}
+.os-total span{color:var(--blue-b)}
+.wa-btn{width:100%;padding:13px;border-radius:10px;background:#25d366;color:#fff;border:none;font-family:var(--font);font-weight:800;font-size:14px;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 0 20px rgba(37,211,102,.25)}
+.wa-btn:hover{background:#20bd5a;transform:translateY(-1px)}
+.wa-btn svg{width:20px;height:20px;fill:#fff}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:10px 20px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;white-space:nowrap;opacity:0;transition:all .28s;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.empty-st{text-align:center;padding:60px 20px;color:var(--muted);grid-column:1/-1}
+.empty-st .ei{font-size:52px;margin-bottom:12px}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:18px 24px;text-align:center;font-size:12px;color:var(--muted);font-family:var(--font-m);margin-top:20px}
+footer span{color:var(--blue-b)}
+
+/* WA FLOTANTE */
+#wa-float{position:fixed;bottom:24px;right:24px;z-index:998;background:#25d366;border-radius:50px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.5);text-decoration:none;transition:all .25s;overflow:hidden}
+#wa-float:hover{width:155px;border-radius:30px}
+#wa-float:hover .wa-float-label{opacity:1;width:auto;margin-left:8px}
+.wa-float-label{color:white;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;opacity:0;width:0;white-space:nowrap;overflow:hidden;transition:all .25s}
+@keyframes wa-pulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.5)}50%{box-shadow:0 4px 30px rgba(37,211,102,.8),0 0 0 8px rgba(37,211,102,.12)}}
+#wa-float{animation:wa-pulse 2.5s ease-in-out infinite}
+
+@media(max-width:600px){
+  .det-layout{grid-template-columns:1fr}
+  .det-img{border-radius:16px 16px 0 0;height:200px}
+  .cart-sidebar{width:100%;right:-100%}
+  .hdr-search{display:none}
+  .prods{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))}
+  .cuotas-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-top">
+    <a class="logo" href="#">
+      <div class="logo-ico">⚡</div>
+      <div>
+        <div class="logo-brand">CV Electrónica</div>
+        <div class="logo-tag">TIENDA ONLINE</div>
+      </div>
+    </a>
+    <div class="hdr-search">
+      <span style="color:var(--muted)">🔍</span>
+      <input type="text" id="search-inp" placeholder="Buscar productos…" oninput="filterStore()">
+    </div>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 Carrito
+      <div class="cart-badge" id="cart-badge" style="display:none">0</div>
+    </button>
+  </div>
+  <div class="cats-bar">
+    <div class="cats-inner">
+      <div class="cat-tab on" onclick="setCat('',this)">⚡ Todo</div>
+      <div class="cat-tab" onclick="setCat('celulares',this)">📱 Celulares</div>
+      <div class="cat-tab" onclick="setCat('audio',this)">🎧 Audio</div>
+      <div class="cat-tab" onclick="setCat('computacion',this)">💻 Computación</div>
+      <div class="cat-tab" onclick="setCat('smartwatch',this)">⌚ Smartwatch</div>
+      <div class="cat-tab" onclick="setCat('accesorios',this)">🔌 Accesorios</div>
+      <div class="cat-tab" onclick="setCat('joyeria',this)">💍 Joyería</div>
+      <div class="cat-tab" onclick="setCat('muebles',this)">🪑 Muebles</div>
+      <div class="cat-tab" onclick="setCat('otros',this)">📦 Otros</div>
+    </div>
+  </div>
+</header>
+
+<div class="banner">
+  <h1>Tu tienda de <span>confianza</span></h1>
+  <p>Stock en tiempo real · Contado y Crédito · Envío o retiro en local · CV Electrónica</p>
+</div>
+
+<div class="store-wrap">
+  <div class="store-hdr">
+    <div>
+      <h2 id="cat-title">Todos los Productos</h2>
+      <span id="prod-count">Cargando…</span>
+    </div>
+    <select id="sort-sel" onchange="filterStore()">
+      <option value="">Ordenar…</option>
+      <option value="price-asc">Precio: menor a mayor</option>
+      <option value="price-desc">Precio: mayor a menor</option>
+      <option value="name">Nombre A→Z</option>
+    </select>
+  </div>
+  <div class="prods" id="prods-grid">
+    <div class="loading"><div class="spinner"></div>Cargando productos…</div>
+  </div>
+</div>
+
+<footer><span>CV Electrónica</span> · Todos los precios en Guaraníes (₲)</footer>
+
+<!-- DETAIL -->
+<div class="overlay" id="ov-detail">
+  <div class="modal">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:flex-end">
+      <button class="modal-x" onclick="closeOv('ov-detail')">✕</button>
+    </div>
+    <div class="det-layout">
+      <div class="det-img" id="det-img">📦</div>
+      <div class="det-info">
+        <div class="det-cat" id="det-cat"></div>
+        <div class="det-name" id="det-name"></div>
+        <div class="det-desc" id="det-desc"></div>
+        <div id="det-stock-row" style="margin-bottom:10px"></div>
+        <div class="det-price" id="det-price"></div>
+        <div class="det-cuota-info" id="det-cuota-info"></div>
+        <div class="det-sku" id="det-sku"></div>
+        <div class="det-qty">
+          <button class="dqb" onclick="chDetQty(-1)">−</button>
+          <span class="dqn" id="det-qty-n">1</span>
+          <button class="dqb" onclick="chDetQty(1)">+</button>
+          <span style="font-size:11px;color:var(--muted);font-family:var(--font-m)" id="det-max"></span>
+        </div>
+        <button class="det-add" id="det-add-btn" onclick="addFromDetail()">🛒 Agregar al Carrito</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART -->
+<div class="cart-scrim" id="cart-scrim" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cs-hdr">
+    <h3>🛒 Mi Carrito</h3>
+    <button class="modal-x" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cs-items" id="cs-items">
+    <div class="cs-empty"><div class="cei">🛒</div><p>Tu carrito está vacío</p></div>
+  </div>
+  <div class="cs-foot">
+    <div class="cs-line"><span>Subtotal</span><span id="cs-sub">₲ 0</span></div>
+    <div class="cs-line"><span>Envío</span><span style="color:var(--green)">A confirmar</span></div>
+    <div class="cs-total"><span>TOTAL</span><span id="cs-tot">₲ 0</span></div>
+    <button class="ck-btn" onclick="openCheckout()">📋 Confirmar Pedido</button>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="overlay" id="ov-checkout">
+  <div class="ck-modal">
+    <div class="ck-hd">
+      <h3>📋 Confirmar Pedido</h3>
+      <button class="modal-x" onclick="closeOv('ov-checkout')">✕</button>
+    </div>
+    <div class="ck-bd">
+      <div class="order-summary">
+        <div class="os-title">🧾 Resumen</div>
+        <div id="ck-items-list"></div>
+        <div class="os-total"><span>TOTAL</span><span id="ck-total-disp">₲ 0</span></div>
+      </div>
+
+      <div class="fg2">
+        <div class="fg"><label class="fl">Nombre *</label><input class="fi" id="ck-nombre" placeholder="Tu nombre"></div>
+        <div class="fg"><label class="fl">Teléfono *</label><input class="fi" id="ck-tel" placeholder="0981..." type="tel"></div>
+      </div>
+
+      <!-- CONTADO / CREDITO -->
+      <div class="fg">
+        <label class="fl">Modalidad de Pago</label>
+        <div class="tog-row col2">
+          <div class="tog on" onclick="setModalidad('contado',this)"><span class="di">💵</span>Contado</div>
+          <div class="tog" onclick="setModalidad('credito',this)"><span class="di">💳</span>Crédito</div>
+        </div>
+      </div>
+
+      <!-- CUOTAS (solo credito) -->
+      <div class="cuotas-wrap" id="cuotas-wrap">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px">Elegí las cuotas:</div>
+        <div class="recargo-info">
+          <span>Recargo por crédito:</span>
+          <strong id="recargo-pct-lbl">0%</strong>
+        </div>
+        <div class="cuotas-grid" id="cuotas-grid"></div>
+        <div style="margin-top:10px;font-size:11px;font-family:var(--font-m);color:var(--text2)" id="cuota-resumen"></div>
+      </div>
+
+      <!-- ENTREGA -->
+      <div class="fg">
+        <label class="fl">Entrega</label>
+        <div class="tog-row col2">
+          <div class="tog on" onclick="setDelivery('retiro',this)"><span class="di">🏪</span>Retiro en Local</div>
+          <div class="tog" onclick="setDelivery('delivery',this)"><span class="di">🚚</span>Delivery</div>
+        </div>
+      </div>
+      <div class="fg" id="addr-group" style="display:none"><label class="fl">Dirección *</label><input class="fi" id="ck-addr" placeholder="Calle, número…"></div>
+      <div class="fg" id="barrio-group" style="display:none"><label class="fl">Barrio / Ciudad</label><input class="fi" id="ck-barrio" placeholder="Ej: Asunción, Fernando"></div>
+
+      <!-- METODO PAGO CONTADO -->
+      <div class="fg" id="metodo-wrap">
+        <label class="fl">Método de Pago</label>
+        <div class="tog-row col3">
+          <div class="tog on" onclick="setMetodo(this,'Efectivo')"><span class="di">💵</span>Efectivo</div>
+          <div class="tog" onclick="setMetodo(this,'Transferencia')"><span class="di">🏦</span>Transfer.</div>
+          <div class="tog" onclick="setMetodo(this,'Tarjeta')"><span class="di">💳</span>Tarjeta</div>
+        </div>
+      </div>
+
+      <div class="fg"><label class="fl">Notas</label><input class="fi" id="ck-notas" placeholder="Aclaraciones…"></div>
+    </div>
+    <div class="ck-ft">
+      <button class="wa-btn" onclick="sendWA()">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Enviar Pedido por WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- WA FLOTANTE -->
+<a id="wa-float" href="https://wa.me/595976199109?text=Hola!%20Tengo%20una%20consulta%20de%20CV%20Electrónica%20🛒" target="_blank">
+  <svg viewBox="0 0 24 24" fill="white" width="28" height="28"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <span class="wa-float-label">¿Consultas?</span>
+</a>
+
+<div class="toast" id="toast"><span id="t-ico">✅</span><span id="t-msg">Ok</span></div>
+
+<script>
+const SUPA_URL='https://xicdaktlxzpucxdrzeez.supabase.co';
+const SUPA_KEY='sb_publishable_dVnRw15mDfQQ_KylV4YK1A_MsAqC0cA';
+const WA_NUMBER='595976199109';
+const {createClient}=supabase;
+const db=createClient(SUPA_URL,SUPA_KEY);
+
+let PRODS=[],CART=[],CONFIG={recargo_credito:20};
+let activeCat='',detProd=null,detQty=1;
+let modalidad='contado',cuotasElegidas=2,delivType='retiro',metodoContado='Efectivo';
+
+const CATNAMES={'':'Todos los Productos',celulares:'Celulares',audio:'Audio',computacion:'Computación',smartwatch:'Smartwatch',accesorios:'Accesorios',joyeria:'Joyería',muebles:'Muebles',otros:'Otros'};
+
+function fmt(n){return '₲ '+Number(n).toLocaleString('es-PY',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function stOf(p){return p.stock===0?'out':p.stock<=p.stock_minimo?'low':'ok';}
+function stLbl(p){
+  if(p.stock===0)return['out','Sin stock'];
+  if(p.stock<=p.stock_minimo)return['low',`⚠ Últimas ${p.stock}u`];
+  return['ok',`${p.stock} en stock`];
+}
+
+// Cargar config (recargo credito)
+async function loadConfig(){
+  try{
+    const {data}=await db.from('config').select('*').eq('clave','recargo_credito').single();
+    if(data) CONFIG.recargo_credito=Number(data.valor)||20;
+  }catch(e){}
+}
+
+async function loadProds(){
+  const {data,error}=await db.from('productos').select('*').eq('activo',true).gt('stock',0).order('nombre');
+  if(error){document.getElementById('prods-grid').innerHTML='<div class="empty-st"><div class="ei">❌</div><p>Error al cargar. Recargá la página.</p></div>';return;}
+  PRODS=data||[];
+  filterStore();
+}
+
+function cuotaValor(total,cuotas){
+  const conRecargo=total*(1+CONFIG.recargo_credito/100);
+  return Math.ceil(conRecargo/cuotas);
+}
+
+function renderProds(list){
+  const g=document.getElementById('prods-grid');
+  document.getElementById('prod-count').textContent=list.length+' producto'+(list.length!==1?'s':'');
+  if(!list.length){g.innerHTML='<div class="empty-st"><div class="ei">🔍</div><p>Sin resultados</p></div>';return;}
+  g.innerHTML=list.map(p=>{
+    const[sc,sl]=stLbl(p);
+    const cuota=cuotaValor(p.precio_venta,6);
+    return`<div class="pcard" onclick="openDetail(${p.id})">
+      <div class="pcard-img">
+        ${p.imagen_url?`<img src="${p.imagen_url}">`:(p.icono||'📦')}
+        <div class="sp ${sc}">${sl}</div>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-cat">${p.categoria}</div>
+        <div class="pcard-name">${p.nombre}</div>
+        <div class="pcard-desc">${p.descripcion||''}</div>
+        <div class="pcard-price">${fmt(p.precio_venta)}</div>
+        <div class="pcard-cuota">💳 Hasta 12x de ${fmt(cuota)}</div>
+        <button class="add-btn ${cartHas(p.id)?'added':''}" onclick="event.stopPropagation();quickAdd(${p.id})">
+          ${cartHas(p.id)?'✅ En carrito':'🛒 Agregar'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function cartHas(id){return CART.some(c=>c.id===id);}
+
+function filterStore(){
+  let list=activeCat?PRODS.filter(p=>p.categoria===activeCat):[...PRODS];
+  const q=document.getElementById('search-inp').value.toLowerCase();
+  if(q)list=list.filter(p=>p.nombre.toLowerCase().includes(q)||p.descripcion?.toLowerCase().includes(q));
+  const s=document.getElementById('sort-sel').value;
+  if(s==='price-asc')list.sort((a,b)=>a.precio_venta-b.precio_venta);
+  if(s==='price-desc')list.sort((a,b)=>b.precio_venta-a.precio_venta);
+  if(s==='name')list.sort((a,b)=>a.nombre.localeCompare(b.nombre));
+  renderProds(list);
+}
+
+function setCat(cat,el){
+  activeCat=cat;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('cat-title').textContent=CATNAMES[cat]||'Productos';
+  filterStore();
+}
+
+function quickAdd(id){
+  const p=PRODS.find(x=>x.id===id);if(!p||!p.stock)return;
+  const ex=CART.find(c=>c.id===id);
+  if(ex){if(ex.qty>=p.stock){toast('⚠️',`Máximo: ${p.stock}u`);return;}ex.qty++;}
+  else CART.push({...p,qty:1});
+  updateCartUI();filterStore();
+  toast('✅',`${p.nombre} agregado`);
+}
+
+function openDetail(id){
+  const p=PRODS.find(x=>x.id===id);if(!p)return;
+  detProd=p;detQty=1;
+  const[sc,sl]=stLbl(p);
+  document.getElementById('det-img').innerHTML=p.imagen_url?`<img src="${p.imagen_url}">`:(p.icono||'📦');
+  document.getElementById('det-cat').textContent=p.categoria;
+  document.getElementById('det-name').textContent=p.nombre;
+  document.getElementById('det-desc').textContent=p.descripcion||'';
+  document.getElementById('det-price').textContent=fmt(p.precio_venta);
+  document.getElementById('det-cuota-info').textContent=`💳 Hasta 12x de ${fmt(cuotaValor(p.precio_venta,12))} con crédito`;
+  document.getElementById('det-sku').textContent='SKU: '+p.sku;
+  document.getElementById('det-qty-n').textContent=1;
+  document.getElementById('det-max').textContent=`Máx. ${p.stock}`;
+  document.getElementById('det-stock-row').innerHTML=`<span class="sp ${sc}" style="position:static;display:inline-block">${sl}</span>`;
+  const btn=document.getElementById('det-add-btn');
+  btn.disabled=p.stock===0;btn.textContent=p.stock===0?'❌ Sin stock':'🛒 Agregar al Carrito';
+  openOv('ov-detail');
+}
+
+function chDetQty(d){if(!detProd)return;detQty=Math.max(1,Math.min(detQty+d,detProd.stock));document.getElementById('det-qty-n').textContent=detQty;}
+
+function addFromDetail(){
+  if(!detProd||!detProd.stock)return;
+  const ex=CART.find(c=>c.id===detProd.id);
+  if(ex)ex.qty=Math.min(ex.qty+detQty,detProd.stock);
+  else CART.push({...detProd,qty:detQty});
+  updateCartUI();filterStore();
+  closeOv('ov-detail');
+  toast('✅',`${detProd.nombre} × ${detQty} agregado`);
+}
+
+// CART
+function openCart(){document.getElementById('cart-sidebar').classList.add('open');document.getElementById('cart-scrim').classList.add('open');}
+function closeCart(){document.getElementById('cart-sidebar').classList.remove('open');document.getElementById('cart-scrim').classList.remove('open');}
+
+function updateCartUI(){
+  const total=CART.reduce((s,c)=>s+c.precio_venta*c.qty,0);
+  const count=CART.reduce((s,c)=>s+c.qty,0);
+  const b=document.getElementById('cart-badge');
+  b.textContent=count;b.style.display=count?'flex':'none';
+  document.getElementById('cs-sub').textContent=fmt(total);
+  document.getElementById('cs-tot').textContent=fmt(total);
+  const el=document.getElementById('cs-items');
+  if(!CART.length){el.innerHTML='<div class="cs-empty"><div class="cei">🛒</div><p>Tu carrito está vacío</p></div>';return;}
+  el.innerHTML=CART.map(c=>`<div class="cs-item">
+    <div class="csi-ico">${c.imagen_url?`<img src="${c.imagen_url}">`:(c.icono||'📦')}</div>
+    <div class="csi-inf"><div class="csi-name">${c.nombre}</div><div class="csi-price">${fmt(c.precio_venta)} c/u</div></div>
+    <div class="csi-qty"><button class="cqb" onclick="cChQty(${c.id},-1)">−</button><span class="cqn">${c.qty}</span><button class="cqb" onclick="cChQty(${c.id},1)">+</button></div>
+    <div class="csi-total">${fmt(c.precio_venta*c.qty)}</div>
+    <span class="csi-del" onclick="cRm(${c.id})">✕</span>
+  </div>`).join('');
+}
+
+function cChQty(id,d){const item=CART.find(c=>c.id===id),p=PRODS.find(x=>x.id===id);if(!item)return;item.qty=Math.max(1,Math.min(item.qty+d,p.stock));updateCartUI();}
+function cRm(id){CART=CART.filter(c=>c.id!==id);updateCartUI();filterStore();}
+
+// CHECKOUT
+function openCheckout(){
+  if(!CART.length){toast('⚠️','Agregá productos primero');return;}
+  closeCart();
+  const total=CART.reduce((s,c)=>s+c.precio_venta*c.qty,0);
+  document.getElementById('ck-items-list').innerHTML=CART.map(c=>`<div class="os-item"><span>${c.nombre} × ${c.qty}</span><span>${fmt(c.precio_venta*c.qty)}</span></div>`).join('');
+  document.getElementById('ck-total-disp').textContent=fmt(total);
+  // Reset
+  modalidad='contado';cuotasElegidas=2;
+  document.querySelectorAll('.cuotas-wrap').forEach(x=>x.classList.remove('show'));
+  document.getElementById('recargo-pct-lbl').textContent=CONFIG.recargo_credito+'%';
+  renderCuotas(total);
+  openOv('ov-checkout');
+}
+
+function renderCuotas(totalBase){
+  const recargo=CONFIG.recargo_credito;
+  const totalConRecargo=totalBase*(1+recargo/100);
+  const grid=document.getElementById('cuotas-grid');
+  grid.innerHTML=[2,3,4,6,9,12].map(n=>`
+    <div class="cuota-opt ${n===cuotasElegidas?'on':''}" onclick="selCuota(${n},${totalBase})">
+      <span class="cn">${n}x</span>
+      <span class="cv">${fmt(Math.ceil(totalConRecargo/n))}</span>
+    </div>`).join('');
+  updateCuotaResumen(totalBase);
+}
+
+function selCuota(n,totalBase){
+  cuotasElegidas=n;
+  document.querySelectorAll('.cuota-opt').forEach(x=>x.classList.remove('on'));
+  event.currentTarget.classList.add('on');
+  updateCuotaResumen(totalBase);
+}
+
+function updateCuotaResumen(totalBase){
+  const totalConRecargo=totalBase*(1+CONFIG.recargo_credito/100);
+  const cuota=Math.ceil(totalConRecargo/cuotasElegidas);
+  document.getElementById('cuota-resumen').innerHTML=
+    `Total con recargo: <strong style="color:var(--warn)">${fmt(totalConRecargo)}</strong> → ${cuotasElegidas} cuotas de <strong style="color:var(--green)">${fmt(cuota)}</strong>`;
+}
+
+function setModalidad(m,el){
+  modalidad=m;
+  document.querySelectorAll('.tog').forEach(x=>{if(x.onclick&&x.onclick.toString().includes('setModalidad'))x.classList.remove('on')});
+  el.classList.add('on');
+  const cw=document.getElementById('cuotas-wrap');
+  const mw=document.getElementById('metodo-wrap');
+  if(m==='credito'){
+    cw.classList.add('show');
+    mw.style.display='none';
+    const total=CART.reduce((s,c)=>s+c.precio_venta*c.qty,0);
+    renderCuotas(total);
+  } else {
+    cw.classList.remove('show');
+    mw.style.display='block';
+  }
+}
+
+function setDelivery(type,el){
+  delivType=type;
+  document.querySelectorAll('.tog').forEach(x=>{if(x.onclick&&x.onclick.toString().includes('setDelivery'))x.classList.remove('on')});
+  el.classList.add('on');
+  document.getElementById('addr-group').style.display=type==='delivery'?'block':'none';
+  document.getElementById('barrio-group').style.display=type==='delivery'?'block':'none';
+}
+
+function setMetodo(el,m){
+  metodoContado=m;
+  document.querySelectorAll('.tog').forEach(x=>{if(x.onclick&&x.onclick.toString().includes('setMetodo'))x.classList.remove('on')});
+  el.classList.add('on');
+}
+
+function sendWA(){
+  const nombre=document.getElementById('ck-nombre').value.trim();
+  const tel=document.getElementById('ck-tel').value.trim();
+  if(!nombre){toast('⚠️','Ingresá tu nombre');return;}
+  if(!tel){toast('⚠️','Ingresá tu teléfono');return;}
+  if(delivType==='delivery'&&!document.getElementById('ck-addr').value.trim()){toast('⚠️','Ingresá tu dirección');return;}
+  if(modalidad==='credito'&&!cuotasElegidas){toast('⚠️','Elegí las cuotas');return;}
+
+  const totalBase=CART.reduce((s,c)=>s+c.precio_venta*c.qty,0);
+  const totalFinal=modalidad==='credito'?totalBase*(1+CONFIG.recargo_credito/100):totalBase;
+  const cuotaVal=modalidad==='credito'?Math.ceil(totalFinal/cuotasElegidas):0;
+  const addr=document.getElementById('ck-addr').value.trim();
+  const barrio=document.getElementById('ck-barrio').value.trim();
+  const notas=document.getElementById('ck-notas').value.trim();
+
+  let msg=`⚡ *NUEVO PEDIDO — CV Electrónica*\n`;
+  msg+=`━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  msg+=`👤 *Cliente:* ${nombre}\n`;
+  msg+=`📞 *Teléfono:* ${tel}\n\n`;
+  msg+=`🛒 *PRODUCTOS:*\n`;
+  CART.forEach(c=>{msg+=`  • ${c.nombre} × ${c.qty} — ${fmt(c.precio_venta*c.qty)}\n`;});
+  msg+=`\n💰 *Total contado:* ${fmt(totalBase)}\n`;
+  if(modalidad==='credito'){
+    msg+=`💳 *Modalidad: CRÉDITO*\n`;
+    msg+=`   Recargo ${CONFIG.recargo_credito}% → Total: ${fmt(Math.ceil(totalFinal))}\n`;
+    msg+=`   ${cuotasElegidas} cuotas de ${fmt(cuotaVal)}\n`;
+  } else {
+    msg+=`💵 *Modalidad: CONTADO* — ${metodoContado}\n`;
+  }
+  msg+=`📦 *Entrega:* ${delivType==='retiro'?'🏪 Retiro en local':`🚚 Delivery → ${addr}${barrio?' — '+barrio:''}`}\n`;
+  if(notas)msg+=`📝 *Notas:* ${notas}\n`;
+  msg+=`\n━━━━━━━━━━━━━━━━━━━━━━━━\n¡Gracias por tu pedido! 🙌`;
+
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
+  toast('✅','¡Pedido enviado!');
+  setTimeout(()=>{CART=[];updateCartUI();filterStore();closeOv('ov-checkout');},1500);
+}
+
+function openOv(id){document.getElementById(id).classList.add('open');}
+function closeOv(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOv(o.id);}));
+
+function toast(ico,msg){
+  const t=document.getElementById('toast');
+  document.getElementById('t-ico').textContent=ico;
+  document.getElementById('t-msg').textContent=msg;
+  t.classList.remove('show');void t.offsetWidth;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// INIT
+Promise.all([loadConfig(),loadProds()]);
+</script>
+</body>
+</html>
