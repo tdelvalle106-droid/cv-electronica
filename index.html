@@ -611,45 +611,138 @@ function setMetodo(el,m){
   document.querySelectorAll('.tog').forEach(x=>{if(x.onclick&&x.onclick.toString().includes('setMetodo'))x.classList.remove('on')});
   el.classList.add('on');
 }
-
-function sendWA(){
+async function sendWA(){
   const nombre=document.getElementById('ck-nombre').value.trim();
   const tel=document.getElementById('ck-tel').value.trim();
+
   if(!nombre){toast('⚠️','Ingresá tu nombre');return;}
   if(!tel){toast('⚠️','Ingresá tu teléfono');return;}
-  if(delivType==='delivery'&&!document.getElementById('ck-addr').value.trim()){toast('⚠️','Ingresá tu dirección');return;}
-  if(modalidad==='credito'&&!cuotasElegidas){toast('⚠️','Elegí las cuotas');return;}
+
+  if(delivType==='delivery'&&!document.getElementById('ck-addr').value.trim()){
+    toast('⚠️','Ingresá tu dirección');
+    return;
+  }
+
+  if(modalidad==='credito'&&!cuotasElegidas){
+    toast('⚠️','Elegí las cuotas');
+    return;
+  }
 
   const totalBase=CART.reduce((s,c)=>s+c.precio_venta*c.qty,0);
-  const totalFinal=modalidad==='credito'?totalBase*(1+CONFIG.recargo_credito/100):totalBase;
-  const cuotaVal=modalidad==='credito'?Math.ceil(totalFinal/cuotasElegidas):0;
+  const totalFinal=modalidad==='credito'
+    ? totalBase*(1+CONFIG.recargo_credito/100)
+    : totalBase;
+
   const addr=document.getElementById('ck-addr').value.trim();
   const barrio=document.getElementById('ck-barrio').value.trim();
   const notas=document.getElementById('ck-notas').value.trim();
 
-  let msg=`⚡ *NUEVO PEDIDO — CV Electrónica*\n`;
-  msg+=`━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-  msg+=`👤 *Cliente:* ${nombre}\n`;
-  msg+=`📞 *Teléfono:* ${tel}\n\n`;
-  msg+=`🛒 *PRODUCTOS:*\n`;
-  CART.forEach(c=>{msg+=`  • ${c.nombre} × ${c.qty} — ${fmt(c.precio_venta*c.qty)}\n`;});
-  msg+=`\n💰 *Total contado:* ${fmt(totalBase)}\n`;
-  if(modalidad==='credito'){
-    msg+=`💳 *Modalidad: CRÉDITO*\n`;
-    msg+=`   Recargo ${CONFIG.recargo_credito}% → Total: ${fmt(Math.ceil(totalFinal))}\n`;
-    msg+=`   ${cuotasElegidas} cuotas de ${fmt(cuotaVal)}\n`;
-  } else {
-    msg+=`💵 *Modalidad: CONTADO* — ${metodoContado}\n`;
+  try {
+
+    // ===============================
+    // 1. BUSCAR O CREAR CLIENTE
+    // ===============================
+    let { data: cliente } = await db
+      .from('clientes')
+      .select('*')
+      .eq('telefono', tel)
+      .maybeSingle();
+
+    if(!cliente){
+      const { data: nuevoCliente, error: errCliente } = await db
+        .from('clientes')
+        .insert({
+          nombre: nombre,
+          telefono: tel,
+          direccion: addr,
+          notas: 'Cliente desde tienda web'
+        })
+        .select()
+        .single();
+
+      if(errCliente) throw errCliente;
+      cliente = nuevoCliente;
+    }
+
+    // ===============================
+    // 2. CREAR VENTA
+    // ===============================
+    const { data: venta, error: errVenta } = await db
+      .from('ventas')
+      .insert({
+        numero_factura: 'WEB-' + Date.now(),
+        cliente_id: cliente.id,
+        cliente_nombre: nombre,
+        cliente_tel: tel,
+        productos_detalle: CART,
+        subtotal: totalBase,
+        total: totalFinal,
+        metodo_pago: modalidad === 'credito' ? 'Credito' : metodoContado,
+        tipo_entrega: delivType,
+        direccion_entrega: addr,
+        estado: modalidad === 'credito' ? 'pendiente' : 'pagado',
+        notas: notas
+      })
+      .select()
+      .single();
+
+    if(errVenta) throw errVenta;
+
+    // ===============================
+    // 3. CREAR DEUDA (SI ES CRÉDITO)
+    // ===============================
+    if(modalidad === 'credito'){
+      const { error: errDeuda } = await db
+        .from('deudas')
+        .insert({
+          cliente_id: cliente.id,
+          monto: totalFinal,
+          descripcion: `Venta ${venta.numero_factura}`,
+          cuotas: cuotasElegidas,
+          fecha_vencimiento: new Date().toISOString().split('T')[0]
+        });
+
+      if(errDeuda) throw errDeuda;
+    }
+
+    // ===============================
+    // 4. ENVIAR A WHATSAPP
+    // ===============================
+    let msg=`⚡ *NUEVO PEDIDO — CV Electrónica*\n`;
+    msg+=`━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    msg+=`👤 *Cliente:* ${nombre}\n`;
+    msg+=`📞 *Teléfono:* ${tel}\n\n`;
+
+    msg+=`🛒 *PRODUCTOS:*\n`;
+    CART.forEach(c=>{
+      msg+=`• ${c.nombre} × ${c.qty} — ${fmt(c.precio_venta*c.qty)}\n`;
+    });
+
+    msg+=`\n💰 *Total:* ${fmt(totalFinal)}\n`;
+
+    if(modalidad==='credito'){
+      msg+=`💳 Crédito: ${cuotasElegidas} cuotas\n`;
+    }
+
+    msg+=`📦 Entrega: ${delivType==='retiro'?'Retiro en local':addr}\n`;
+
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
+
+    // ===============================
+    // 5. LIMPIAR
+    // ===============================
+    toast('✅','Pedido guardado correctamente');
+
+    CART=[];
+    updateCartUI();
+    filterStore();
+    closeOv('ov-checkout');
+
+  } catch(err){
+    console.error('ERROR:', err);
+    toast('❌','Error al guardar pedido');
   }
-  msg+=`📦 *Entrega:* ${delivType==='retiro'?'🏪 Retiro en local':`🚚 Delivery → ${addr}${barrio?' — '+barrio:''}`}\n`;
-  if(notas)msg+=`📝 *Notas:* ${notas}\n`;
-  msg+=`\n━━━━━━━━━━━━━━━━━━━━━━━━\n¡Gracias por tu pedido! 🙌`;
-
-  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
-  toast('✅','¡Pedido enviado!');
-  setTimeout(()=>{CART=[];updateCartUI();filterStore();closeOv('ov-checkout');},1500);
 }
-
 function openOv(id){document.getElementById(id).classList.add('open');}
 function closeOv(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOv(o.id);}));

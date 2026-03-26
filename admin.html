@@ -237,6 +237,55 @@
   .toast.show{transform:translateY(0);opacity:1}
   .notif-pulse{width:7px;height:7px;background:var(--blue);border-radius:50%;position:absolute;top:9px;right:18px;box-shadow:0 0 8px var(--blue);animation:blink 2s infinite}
   .stk-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+
+  /* CLIENTES */
+  .cli-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .cli-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;cursor:pointer;transition:all .2s}
+  .cli-card:hover{border-color:var(--blue);box-shadow:0 6px 24px rgba(30,144,255,.12);transform:translateY(-2px)}
+  .cli-av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;flex-shrink:0}
+  .cli-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .cli-inf .cn{font-size:15px;font-weight:700}.cli-inf .ct{font-size:11px;font-family:var(--font-m);color:var(--text2);margin-top:2px}
+  .cli-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .cs-item{background:var(--surface2);border-radius:7px;padding:8px;text-align:center}
+  .cs-val{font-family:var(--font-c);font-size:16px;font-weight:800}.cs-lbl{font-size:9px;font-family:var(--font-m);color:var(--muted);text-transform:uppercase;margin-top:2px}
+  .deuda-warn{color:var(--danger)}.deuda-ok{color:var(--green)}
+
+  /* EXTRACTO TABS */
+  .ext-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:16px;width:fit-content}
+  .ext-tab{padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-m);color:var(--text2);background:transparent;border:none;transition:all .18s}
+  .ext-tab.on{background:var(--blue);color:#fff}
+  .ext-tab:not(.on):hover{background:var(--blue-g);color:var(--blue-b)}
+
+  /* TIMELINE */
+  .timeline{display:flex;flex-direction:column;gap:0}
+  .tl-item{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid rgba(30,49,88,.4)}
+  .tl-item:last-child{border-bottom:none}
+  .tl-dot-wrap{display:flex;flex-direction:column;align-items:center;width:32px;flex-shrink:0}
+  .tl-dot{width:12px;height:12px;border-radius:50%;margin-top:4px;flex-shrink:0}
+  .tl-dot.deuda{background:var(--danger);box-shadow:0 0 6px var(--danger)}
+  .tl-dot.pago{background:var(--green);box-shadow:0 0 6px var(--green)}
+  .tl-dot.venta{background:var(--blue);box-shadow:0 0 6px var(--blue)}
+  .tl-line{flex:1;width:1px;background:var(--border);margin-top:4px}
+  .tl-body{flex:1}
+  .tl-title{font-size:13px;font-weight:600}.tl-sub{font-size:11px;font-family:var(--font-m);color:var(--text2);margin-top:2px}
+  .tl-amt{font-family:var(--font-m);font-size:13px;font-weight:700;text-align:right;white-space:nowrap}
+  .tl-date{font-size:10px;font-family:var(--font-m);color:var(--muted);margin-top:2px;text-align:right}
+
+  /* RECIBO */
+  .rcb-preview{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:20px;font-family:var(--font-m);font-size:12px;line-height:1.9}
+  .rcb-head{text-align:center;margin-bottom:14px}
+  .rcb-divider{border:none;border-top:1px dashed var(--border2);margin:10px 0}
+  .rcb-row{display:flex;justify-content:space-between;padding:2px 0}
+  .rcb-row .lbl{color:var(--text2)}.rcb-row .val{font-weight:700;color:var(--text)}
+  .rcb-total-row{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--border2);margin-top:6px;font-size:14px;font-weight:900}
+  .rcb-total-row .lbl{color:var(--text)}.rcb-total-row .val{color:var(--green)}
+  .wa-btn{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .18s}
+  .wa-btn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,211,102,.3)}
+
+  /* DEUDA BADGE on cli-card */
+  .deuda-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;font-size:10px;font-family:var(--font-m);font-weight:700;margin-top:6px}
+  .deuda-badge.has{background:rgba(255,77,109,.12);color:var(--danger);border:1px solid rgba(255,77,109,.25)}
+  .deuda-badge.none{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.2)}
 </style>
 </head>
 <body>
@@ -287,6 +336,8 @@
     <div class="nav-sec">Finanzas</div>
     <div class="nav-item" onclick="go('ventas',this)"><span class="ni">🧾</span>Ventas</div>
     <div class="nav-item" onclick="go('facturas',this)"><span class="ni">📄</span>Facturas</div>
+    <div class="nav-item" onclick="go('clientes',this)"><span class="ni">👤</span>Clientes<span class="nbadge blue" id="nb-cli">0</span></div>
+    <div class="nav-item" onclick="go('deudas',this)"><span class="ni">💳</span>Deudas<span class="nbadge red" id="nb-deu">0</span></div>
     <div class="nav-sec">Sistema</div>
     <div class="nav-item" onclick="go('config',this)"><span class="ni">⚙️</span>Configuración</div>
   </nav>
@@ -410,6 +461,43 @@
             <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="clearCart()">🗑 Limpiar</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="view" id="v-clientes">
+      <div class="toolbar">
+        <div class="sbox"><span>🔍</span><input type="text" id="scli" placeholder="Buscar cliente…" oninput="filterCli()"></div>
+        <select id="fcli-estado" style="width:auto" onchange="filterCli()">
+          <option value="">Todos</option>
+          <option value="deuda">Con deuda</option>
+          <option value="ok">Al día</option>
+        </select>
+        <button class="btn btn-primary" onclick="openM('m-cliente')">+ Nuevo Cliente</button>
+        <button class="btn btn-ghost" onclick="openM('m-deuda-manual')">💳 Cargar Deuda</button>
+      </div>
+      <div id="cli-wrap"><div class="loading"><div class="spinner"></div>Cargando clientes...</div></div>
+    </div>
+
+    <!-- DEUDAS -->
+    <div class="view" id="v-deudas">
+      <div class="toolbar">
+        <div class="sbox"><span>🔍</span><input type="text" id="sdeu" placeholder="Buscar deuda…" oninput="filterDeu()"></div>
+        <select id="fdeu-estado" style="width:auto" onchange="filterDeu()">
+          <option value="">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="pagado">Pagado</option>
+          <option value="parcial">Pago parcial</option>
+        </select>
+        <button class="btn btn-primary" onclick="openM('m-deuda-manual')">+ Nueva Deuda</button>
+      </div>
+      <div class="total-row" style="margin-bottom:18px">
+        <div class="tot-card"><div class="tot-lbl">Total Adeudado</div><div class="tot-val" id="deu-total" style="color:var(--danger)">₲0</div></div>
+        <div class="tot-card"><div class="tot-lbl">Clientes con Deuda</div><div class="tot-val" id="deu-cli-count">0</div></div>
+        <div class="tot-card"><div class="tot-lbl">Cobrado este mes</div><div class="tot-val" id="deu-cobrado" style="color:var(--green)">₲0</div></div>
+      </div>
+      <div class="card"><div class="card-title">📋 Listado de Deudas</div>
+        <div id="deu-wrap"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
       </div>
     </div>
 
@@ -538,6 +626,159 @@
 
 <div class="toast" id="toast"><span id="t-ico">✅</span><span id="t-msg">Ok</span></div>
 
+<!-- MODAL NUEVO CLIENTE -->
+<div class="overlay" id="m-cliente">
+  <div class="modal">
+    <div class="modal-hd"><h3>👤 Nuevo Cliente</h3><button class="modal-x" onclick="closeM('m-cliente')">✕</button></div>
+    <div class="modal-bd">
+      <div class="fg2">
+        <div class="fg"><label class="fl">Nombre *</label><input class="form-input" id="cli-nom" placeholder="Nombre completo"></div>
+        <div class="fg"><label class="fl">Teléfono / WhatsApp</label><input class="form-input" id="cli-tel" placeholder="+595 9xx xxx xxx"></div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">DNI / RUC</label><input class="form-input" id="cli-doc" placeholder="Nro. documento"></div>
+        <div class="fg"><label class="fl">Email</label><input class="form-input" id="cli-email" type="email" placeholder="email@ejemplo.com"></div>
+      </div>
+      <div class="fg"><label class="fl">Dirección</label><input class="form-input" id="cli-dir" placeholder="Dirección..."></div>
+      <div class="fg"><label class="fl">Notas</label><textarea class="form-textarea" id="cli-notas" placeholder="Observaciones del cliente..."></textarea></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeM('m-cliente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveCli()">💾 Guardar Cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DEUDA MANUAL -->
+<div class="overlay" id="m-deuda-manual">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hd"><h3>💳 Cargar Deuda al Cliente</h3><button class="modal-x" onclick="closeM('m-deuda-manual')">✕</button></div>
+    <div class="modal-bd">
+      <div class="fg" style="background:var(--surface2);border:1px solid var(--blue);border-radius:8px;padding:12px;margin-bottom:16px;font-size:12px;font-family:var(--font-m);color:var(--blue-b)">
+        💡 Podés crear deuda <strong>manualmente</strong> (ej: servicio, reparación) o <strong>desde una venta existente</strong>
+      </div>
+      <div class="fg">
+        <label class="fl">Origen de la deuda</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+          <div class="pay-opt on" id="deu-orig-manual" onclick="setDeuOrig('manual',this)"><span class="poi">✏️</span>Manual</div>
+          <div class="pay-opt" id="deu-orig-venta" onclick="setDeuOrig('venta',this)"><span class="poi">🧾</span>Desde venta</div>
+        </div>
+      </div>
+      <div id="deu-from-venta-wrap" style="display:none">
+        <div class="fg"><label class="fl">Seleccionar venta</label>
+          <select class="form-input" id="deu-venta-sel" onchange="loadDeudaFromVenta()">
+            <option value="">— elegí una venta —</option>
+          </select>
+        </div>
+        <div id="deu-venta-preview" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:var(--font-m);font-size:12px;margin-bottom:8px"></div>
+      </div>
+      <div class="fg"><label class="fl">Cliente *</label>
+        <select class="form-input" id="deu-cli-sel">
+          <option value="">— elegí un cliente —</option>
+        </select>
+      </div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">Monto Total ($) *</label><input class="form-input" id="deu-monto" type="number" placeholder="0" oninput="calcDeuCuotas()"></div>
+        <div class="fg"><label class="fl">Cuotas</label>
+          <select class="form-input" id="deu-cuotas" onchange="calcDeuCuotas()">
+            <option value="1">1 — Pago único</option>
+            <option value="2">2 cuotas</option>
+            <option value="3">3 cuotas</option>
+            <option value="4">4 cuotas</option>
+            <option value="6">6 cuotas</option>
+            <option value="9">9 cuotas</option>
+            <option value="12">12 cuotas</option>
+          </select>
+        </div>
+      </div>
+      <div id="deu-cuotas-preview" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:var(--font-m);font-size:12px;display:none;margin-bottom:8px"></div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">Descripción *</label><input class="form-input" id="deu-desc" placeholder="Ej: iPhone 15 a crédito"></div>
+        <div class="fg"><label class="fl">Vencimiento</label><input class="form-input" id="deu-venc" type="date"></div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeM('m-deuda-manual')">Cancelar</button>
+      <button class="btn btn-danger" onclick="saveDeuda()">💳 Registrar Deuda</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EXTRACTO CLIENTE -->
+<div class="overlay" id="m-extracto">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-hd">
+      <div>
+        <h3 id="ext-title">📋 Extracto del Cliente</h3>
+        <div style="font-size:11px;font-family:var(--font-m);color:var(--text2);margin-top:3px" id="ext-sub">Historial completo</div>
+      </div>
+      <button class="modal-x" onclick="closeM('m-extracto')">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div class="ext-tabs">
+          <button class="ext-tab on" onclick="setExtTab('tabla',this)">📊 Vista Tabla</button>
+          <button class="ext-tab" onclick="setExtTab('timeline',this)">📅 Timeline</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <div id="ext-saldo-badge" style="font-family:var(--font-m);font-size:13px;font-weight:700;padding:6px 14px;border-radius:8px"></div>
+        </div>
+      </div>
+      <div id="ext-tabla-view">
+        <div id="ext-tabla-wrap"></div>
+      </div>
+      <div id="ext-timeline-view" style="display:none">
+        <div class="timeline" id="ext-timeline"></div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeM('m-extracto')">Cerrar</button>
+      <button class="btn btn-success" onclick="registrarPagoDesdeExtracto()">💰 Registrar Pago</button>
+      <button class="btn btn-primary" onclick="genExtractoPDF()">📄 PDF Extracto</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RECIBO DE PAGO -->
+<div class="overlay" id="m-recibo">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hd"><h3>🧾 Recibo de Pago</h3><button class="modal-x" onclick="closeM('m-recibo')">✕</button></div>
+    <div class="modal-bd">
+      <div class="fg2">
+        <div class="fg"><label class="fl">Cliente</label><select class="form-input" id="rcb-cli-sel" onchange="loadReciboCli()"><option value="">— elegí cliente —</option></select></div>
+        <div class="fg"><label class="fl">Monto a pagar ($) *</label><input class="form-input" id="rcb-monto" type="number" placeholder="0" oninput="updateReciboPreview()"></div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">Método de pago</label>
+          <select class="form-input" id="rcb-met" onchange="updateReciboPreview()">
+            <option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>QR</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Deuda a aplicar</label>
+          <select class="form-input" id="rcb-deuda-sel" onchange="updateReciboPreview()"><option value="">— todas pendientes —</option></select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Observación</label><input class="form-input" id="rcb-obs" placeholder="Ej: Cuota 2/3..." oninput="updateReciboPreview()"></div>
+      <label class="fl" style="margin-bottom:8px">Vista previa del recibo</label>
+      <div class="rcb-preview" id="rcb-preview">
+        <div class="rcb-head">
+          <div style="font-size:18px;font-weight:900;font-family:var(--font-c)">⚡ CV ELECTRÓNICA</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px">RECIBO DE PAGO</div>
+        </div>
+        <div id="rcb-body" style="color:var(--muted);text-align:center;padding:12px">Completá los datos para ver el recibo…</div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeM('m-recibo')">Cancelar</button>
+      <button class="btn btn-primary" onclick="genReciboPDF()">📄 Descargar PDF</button>
+      <button class="wa-btn" onclick="enviarReciboWA()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ══ SUPABASE CONFIG ══
 const SUPA_URL = 'https://xicdaktlxzpucxdrzeez.supabase.co';
@@ -561,6 +802,8 @@ const PAGES = {
   ventas:['Historial de Ventas','Todas las transacciones'],
   facturas:['Facturación','Emisión de comprobantes'],
   caja:['Caja / POS','Punto de venta directo'],
+  clientes:['Clientes','Gestión de cuentas corrientes'],
+  deudas:['Deudas','Control de cobros pendientes'],
   config:['Configuración','Parámetros del sistema'],
 };
 
@@ -1007,7 +1250,12 @@ function updateBadges() {
 }
 
 // ══ MODALS ══
-function openM(id){document.getElementById(id).classList.add('open');if(id==='m-adj')fillAdjSel();}
+function openM(id){
+  document.getElementById(id).classList.add('open');
+  if(id==='m-adj') fillAdjSel();
+  if(id==='m-deuda-manual') fillDeudaSelects();
+  if(id==='m-recibo') fillReciboSelects();
+}
 function closeM(id){document.getElementById(id).classList.remove('open');if(id==='m-producto')resetProdForm();}
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeM(o.id);}));
 
@@ -1236,6 +1484,534 @@ function genPDF(s) {
 
 function fmt(n){return '₲ '+Number(n).toLocaleString('es-PY',{minimumFractionDigits:0,maximumFractionDigits:0});}
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
-</script>
+
+// ══ CLIENTES DATA ══
+let CLIENTS = [];
+let DEUDAS  = [];
+let activeExtractoCliId = null;
+let deuOrigenMode = 'manual';
+
+async function loadClientes() {
+  const {data, error} = await db.from('clientes').select('*').order('nombre');
+  if(error){ toast('❌','Error cargando clientes'); return; }
+  CLIENTS = data || [];
+  renderClientes();
+  updateBadgesCli();
+}
+
+async function loadDeudas() {
+  const {data, error} = await db.from('deudas').select('*').order('created_at', {ascending:false});
+  if(error){ return; }
+  DEUDAS = data || [];
+  renderDeudas();
+  updateBadgesCli();
+}
+
+async function loadAll() {
+  await Promise.all([loadProds(), loadSales(), loadConfig(), loadClientes(), loadDeudas()]);
+  updateBadges();
+  renderDashboard();
+}
+
+// ══ RENDER CLIENTES ══
+function renderClientes(list) {
+  const arr = (list || CLIENTS);
+  const w = document.getElementById('cli-wrap');
+  if(!arr.length){w.innerHTML='<div class="empty"><div class="ei">👤</div><p>Sin clientes registrados</p></div>';return;}
+  w.innerHTML=`<div class="cli-grid">${arr.map(c=>{
+    const deudasCli = DEUDAS.filter(d=>d.cliente_id===c.id && d.estado!=='pagado');
+    const totalDeuda = deudasCli.reduce((s,d)=>s+Number(d.saldo_pendiente||d.monto),0);
+    const compras = SALES.filter(s=>s.cliente_nombre===c.nombre).length;
+    const totalCompras = SALES.filter(s=>s.cliente_nombre===c.nombre).reduce((s,v)=>s+Number(v.total),0);
+    const ini = (c.nombre||'?').charAt(0).toUpperCase();
+    return `<div class="cli-card" onclick="openExtracto(${c.id})">
+      <div class="cli-hd">
+        <div class="cli-av">${ini}</div>
+        <div class="cli-inf">
+          <div class="cn">${c.nombre}</div>
+          <div class="ct">${c.telefono||'Sin tel.'} ${c.dni?'· '+c.dni:''}</div>
+          <div class="deuda-badge ${totalDeuda>0?'has':'none'}">${totalDeuda>0?'⚠ Deuda: '+fmt(totalDeuda):'✅ Al día'}</div>
+        </div>
+      </div>
+      <div class="cli-stats">
+        <div class="cs-item"><div class="cs-val">${compras}</div><div class="cs-lbl">Compras</div></div>
+        <div class="cs-item"><div class="cs-val" style="color:var(--blue-b);font-size:13px">${totalDeuda>0?fmt(totalDeuda):'₲0'}</div><div class="cs-lbl">Deuda</div></div>
+        <div class="cs-item"><div class="cs-val" style="font-size:13px;color:var(--green)">${fmt(totalCompras)}</div><div class="cs-lbl">Total</div></div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function filterCli() {
+  const q = document.getElementById('scli').value.toLowerCase();
+  const est = document.getElementById('fcli-estado').value;
+  renderClientes(CLIENTS.filter(c=>{
+    const mq = !q || c.nombre.toLowerCase().includes(q) || (c.telefono||'').includes(q);
+    const deudasCli = DEUDAS.filter(d=>d.cliente_id===c.id && d.estado!=='pagado');
+    const totalDeuda = deudasCli.reduce((s,d)=>s+Number(d.saldo_pendiente||d.monto),0);
+    const me = !est || (est==='deuda'&&totalDeuda>0) || (est==='ok'&&totalDeuda===0);
+    return mq && me;
+  }));
+}
+
+async function saveCli() {
+  const nom = document.getElementById('cli-nom').value.trim();
+  if(!nom){toast('⚠️','Ingresá el nombre');return;}
+  const d = {
+    nombre: nom,
+    telefono: document.getElementById('cli-tel').value.trim(),
+    dni: document.getElementById('cli-doc').value.trim(),
+    email: document.getElementById('cli-email').value.trim(),
+    direccion: document.getElementById('cli-dir').value.trim(),
+    notas: document.getElementById('cli-notas').value.trim(),
+  };
+  const {error} = await db.from('clientes').insert(d);
+  if(error){toast('❌','Error: '+error.message);return;}
+  toast('✅','Cliente guardado');
+  closeM('m-cliente');
+  loadClientes();
+}
+
+// ══ RENDER DEUDAS ══
+function renderDeudas(list) {
+  const arr = list || DEUDAS;
+  const w = document.getElementById('deu-wrap');
+  const totalDeu = DEUDAS.filter(d=>d.estado!=='pagado').reduce((s,d)=>s+Number(d.saldo_pendiente||d.monto),0);
+  const cliConDeu = new Set(DEUDAS.filter(d=>d.estado!=='pagado').map(d=>d.cliente_id)).size;
+  const cobrado = DEUDAS.filter(d=>d.estado==='pagado').reduce((s,d)=>s+Number(d.monto),0);
+  document.getElementById('deu-total').textContent = fmt(totalDeu);
+  document.getElementById('deu-cli-count').textContent = cliConDeu;
+  document.getElementById('deu-cobrado').textContent = fmt(cobrado);
+  if(!arr.length){w.innerHTML='<div class="empty"><div class="ei">💳</div><p>Sin deudas registradas</p></div>';return;}
+  w.innerHTML=`<table><thead><tr><th>Cliente</th><th>Descripción</th><th>Monto</th><th>Saldo</th><th>Cuotas</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>${
+    arr.map(d=>{
+      const cli = CLIENTS.find(c=>c.id===d.cliente_id);
+      const saldo = Number(d.saldo_pendiente||d.monto);
+      const estCls = d.estado==='pagado'?'pagado':d.estado==='parcial'?'pendiente':'cancelado';
+      const estLbl = d.estado==='pagado'?'Pagado':d.estado==='parcial'?'Parcial':'Pendiente';
+      return `<tr>
+        <td><strong>${cli?cli.nombre:'—'}</strong></td>
+        <td style="font-size:12px;color:var(--text2)">${d.descripcion}</td>
+        <td style="font-family:var(--font-m)">${fmt(d.monto)}</td>
+        <td style="font-family:var(--font-m);color:${saldo>0?'var(--danger)':'var(--green)'}"><strong>${fmt(saldo)}</strong></td>
+        <td style="font-family:var(--font-m);font-size:11px;color:var(--text2)">${d.cuotas>1?d.cuotas+' cuotas':'Pago único'}</td>
+        <td style="font-family:var(--font-m);font-size:11px;color:var(--muted)">${d.fecha_vencimiento?new Date(d.fecha_vencimiento).toLocaleDateString('es-PY'):'—'}</td>
+        <td><span class="pill ${estCls}">${estLbl}</span></td>
+        <td style="display:flex;gap:5px">
+          <button class="btn btn-success btn-sm" onclick="openRecibo(${d.id})">💰 Cobrar</button>
+          <button class="btn btn-ghost btn-sm" onclick="openExtractoCli(${d.cliente_id})">👁</button>
+        </td>
+      </tr>`;
+    }).join('')}
+  </tbody></table>`;
+}
+
+function filterDeu() {
+  const q = document.getElementById('sdeu').value.toLowerCase();
+  const est = document.getElementById('fdeu-estado').value;
+  renderDeudas(DEUDAS.filter(d=>{
+    const cli = CLIENTS.find(c=>c.id===d.cliente_id);
+    const mq = !q || (cli&&cli.nombre.toLowerCase().includes(q)) || d.descripcion.toLowerCase().includes(q);
+    const me = !est || d.estado===est;
+    return mq && me;
+  }));
+}
+
+// ══ DEUDA FORM ══
+function setDeuOrig(mode, el) {
+  deuOrigenMode = mode;
+  document.querySelectorAll('#m-deuda-manual .pay-opt').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('deu-from-venta-wrap').style.display = mode==='venta' ? 'block' : 'none';
+}
+
+function fillDeudaSelects() {
+  const cliSel = document.getElementById('deu-cli-sel');
+  cliSel.innerHTML = '<option value="">— elegí un cliente —</option>' + CLIENTS.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+  const ventaSel = document.getElementById('deu-venta-sel');
+  ventaSel.innerHTML = '<option value="">— elegí una venta —</option>' + SALES.map(s=>`<option value="${s.id}">${s.numero_factura} — ${s.cliente_nombre} — ${fmt(s.total)}</option>`).join('');
+  // Set default fecha vencimiento (30 días)
+  const dv = new Date(); dv.setDate(dv.getDate()+30);
+  document.getElementById('deu-venc').value = dv.toISOString().split('T')[0];
+}
+
+function loadDeudaFromVenta() {
+  const id = document.getElementById('deu-venta-sel').value;
+  if(!id){document.getElementById('deu-venta-preview').style.display='none';return;}
+  const s = SALES.find(x=>String(x.id)===String(id));
+  if(!s) return;
+  document.getElementById('deu-monto').value = s.total;
+  document.getElementById('deu-desc').value = `Venta ${s.numero_factura} — a crédito`;
+  // Auto-seleccionar cliente si existe
+  const cli = CLIENTS.find(c=>c.nombre===s.cliente_nombre);
+  if(cli) document.getElementById('deu-cli-sel').value = cli.id;
+  const prev = document.getElementById('deu-venta-preview');
+  prev.style.display='block';
+  prev.innerHTML=`<span style="color:var(--blue-b)">Factura:</span> ${s.numero_factura} &nbsp;|&nbsp; <span style="color:var(--blue-b)">Cliente:</span> ${s.cliente_nombre} &nbsp;|&nbsp; <span style="color:var(--green);font-weight:700">${fmt(s.total)}</span>`;
+  calcDeuCuotas();
+}
+
+function calcDeuCuotas() {
+  const monto = +document.getElementById('deu-monto').value||0;
+  const cuotas = +document.getElementById('deu-cuotas').value||1;
+  const recargo = CFG_RECARGO;
+  const prev = document.getElementById('deu-cuotas-preview');
+  if(!monto){prev.style.display='none';return;}
+  prev.style.display='block';
+  if(cuotas===1){
+    prev.innerHTML=`💰 Pago único: <strong style="color:var(--green)">${fmt(monto)}</strong>`;
+  } else {
+    const conRecargo = monto*(1+recargo/100);
+    const porCuota = Math.ceil(conRecargo/cuotas);
+    prev.innerHTML=`Con recargo ${recargo}%: <strong style="color:var(--warn)">${fmt(conRecargo)}</strong> → <strong style="color:var(--blue-b)">${fmt(porCuota)}/mes</strong> × ${cuotas} cuotas`;
+  }
+}
+
+async function saveDeuda() {
+  const cliId = document.getElementById('deu-cli-sel').value;
+  const monto = +document.getElementById('deu-monto').value||0;
+  const desc = document.getElementById('deu-desc').value.trim();
+  if(!cliId){toast('⚠️','Elegí un cliente');return;}
+  if(!monto){toast('⚠️','Ingresá el monto');return;}
+  if(!desc){toast('⚠️','Ingresá la descripción');return;}
+  const cuotas = +document.getElementById('deu-cuotas').value||1;
+  const recargo = cuotas>1 ? CFG_RECARGO : 0;
+  const montoFinal = monto*(1+recargo/100);
+  const ventaId = deuOrigenMode==='venta' ? document.getElementById('deu-venta-sel').value : null;
+  const {error} = await db.from('deudas').insert({
+    cliente_id: +cliId,
+    venta_id: ventaId ? +ventaId : null,
+    descripcion: desc,
+    monto: Math.ceil(montoFinal),
+    saldo_pendiente: Math.ceil(montoFinal),
+    cuotas: cuotas,
+    estado: 'pendiente',
+    fecha_vencimiento: document.getElementById('deu-venc').value || null,
+    origen: deuOrigenMode,
+  });
+  if(error){toast('❌','Error: '+error.message+' — ¿Existe la tabla deudas?');return;}
+  toast('💳',`Deuda de ${fmt(montoFinal)} registrada`);
+  closeM('m-deuda-manual');
+  loadDeudas(); loadClientes();
+}
+
+// ══ EXTRACTO ══
+function openExtracto(cliId) { openExtractoCli(cliId); }
+function openExtractoCli(cliId) {
+  const cli = CLIENTS.find(c=>c.id===cliId);
+  if(!cli) return;
+  activeExtractoCliId = cliId;
+  document.getElementById('ext-title').textContent = `📋 Extracto — ${cli.nombre}`;
+  document.getElementById('ext-sub').textContent = `${cli.telefono||''} ${cli.email?'· '+cli.email:''}`;
+  renderExtracto(cliId);
+  openM('m-extracto');
+}
+
+function setExtTab(tab, el) {
+  document.querySelectorAll('.ext-tab').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('ext-tabla-view').style.display = tab==='tabla' ? '' : 'none';
+  document.getElementById('ext-timeline-view').style.display = tab==='timeline' ? '' : 'none';
+}
+
+function renderExtracto(cliId) {
+  const cli = CLIENTS.find(c=>c.id===cliId);
+  const ventasCli = SALES.filter(s=>s.cliente_nombre===cli.nombre);
+  const deudasCli = DEUDAS.filter(d=>d.cliente_id===cliId);
+  const totalDeuda = deudasCli.filter(d=>d.estado!=='pagado').reduce((s,d)=>s+Number(d.saldo_pendiente||d.monto),0);
+  const totalCompras = ventasCli.reduce((s,v)=>s+Number(v.total),0);
+
+  // Saldo badge
+  const badge = document.getElementById('ext-saldo-badge');
+  if(totalDeuda>0){
+    badge.style.cssText='background:rgba(255,77,109,.12);color:var(--danger);border:1px solid rgba(255,77,109,.25);border-radius:8px;padding:6px 14px;font-family:var(--font-m);font-size:12px;font-weight:700';
+    badge.textContent='Deuda: '+fmt(totalDeuda);
+  } else {
+    badge.style.cssText='background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.2);border-radius:8px;padding:6px 14px;font-family:var(--font-m);font-size:12px;font-weight:700';
+    badge.textContent='✅ Al día';
+  }
+
+  // TABLA VIEW
+  const tw = document.getElementById('ext-tabla-wrap');
+  if(!ventasCli.length && !deudasCli.length){
+    tw.innerHTML='<div class="empty"><div class="ei">📋</div><p>Sin movimientos</p></div>';
+  } else {
+    tw.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+      <div class="cs-item"><div class="cs-val" style="color:var(--blue-b)">${ventasCli.length}</div><div class="cs-lbl">Compras</div></div>
+      <div class="cs-item"><div class="cs-val" style="color:var(--green);font-size:14px">${fmt(totalCompras)}</div><div class="cs-lbl">Total compras</div></div>
+      <div class="cs-item"><div class="cs-val" style="color:${totalDeuda>0?'var(--danger)':'var(--green)'};font-size:14px">${fmt(totalDeuda)}</div><div class="cs-lbl">Saldo deuda</div></div>
+    </div>
+    ${deudasCli.length?`<div style="font-size:11px;font-family:var(--font-m);color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px">DEUDAS</div>
+    <table style="margin-bottom:16px"><thead><tr><th>Descripción</th><th>Monto</th><th>Saldo</th><th>Cuotas</th><th>Estado</th><th></th></tr></thead><tbody>
+    ${deudasCli.map(d=>`<tr>
+      <td>${d.descripcion}</td>
+      <td style="font-family:var(--font-m)">${fmt(d.monto)}</td>
+      <td style="font-family:var(--font-m);color:${Number(d.saldo_pendiente)>0?'var(--danger)':'var(--green)'}">${fmt(d.saldo_pendiente||0)}</td>
+      <td style="font-size:11px;color:var(--text2)">${d.cuotas>1?d.cuotas+' cuotas':'Único'}</td>
+      <td><span class="pill ${d.estado==='pagado'?'pagado':d.estado==='parcial'?'pendiente':'cancelado'}">${cap(d.estado)}</span></td>
+      <td><button class="btn btn-success btn-sm" onclick="openRecibo(${d.id})">💰</button></td>
+    </tr>`).join('')}
+    </tbody></table>`:''}
+    ${ventasCli.length?`<div style="font-size:11px;font-family:var(--font-m);color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px">HISTORIAL DE COMPRAS</div>
+    <table><thead><tr><th>Factura</th><th>Productos</th><th>Total</th><th>Método</th><th>Estado</th><th>Fecha</th></tr></thead><tbody>
+    ${ventasCli.map(s=>`<tr>
+      <td style="font-family:var(--font-m);color:var(--blue-b)">${s.numero_factura}</td>
+      <td style="font-size:12px;color:var(--text2)">${Array.isArray(s.productos_detalle)?s.productos_detalle.map(x=>x.nom||x.nombre).join(', '):s.productos_detalle}</td>
+      <td style="font-family:var(--font-m)">${fmt(s.total)}</td>
+      <td style="font-size:12px">${s.metodo_pago.split(' ')[0]}</td>
+      <td><span class="pill ${s.estado}">${cap(s.estado)}</span></td>
+      <td style="font-family:var(--font-m);font-size:11px;color:var(--muted)">${new Date(s.created_at).toLocaleDateString('es-PY')}</td>
+    </tr>`).join('')}
+    </tbody></table>`:''}`;
+  }
+
+  // TIMELINE VIEW
+  const events = [
+    ...ventasCli.map(s=>({type:'venta',date:new Date(s.created_at),title:`Compra ${s.numero_factura}`,sub:fmt(s.total)+' — '+s.metodo_pago,amt:s.total,sign:'+'})),
+    ...deudasCli.map(d=>({type:'deuda',date:new Date(d.created_at),title:`Deuda: ${d.descripcion}`,sub:`${fmt(d.monto)} ${d.cuotas>1?'— '+d.cuotas+' cuotas':''}`,amt:d.monto,sign:'-'})),
+  ].sort((a,b)=>b.date-a.date);
+  const tl = document.getElementById('ext-timeline');
+  if(!events.length){tl.innerHTML='<div class="empty"><div class="ei">📅</div><p>Sin movimientos</p></div>';return;}
+  tl.innerHTML=events.map((ev,i)=>`<div class="tl-item">
+    <div class="tl-dot-wrap">
+      <div class="tl-dot ${ev.type}"></div>
+      ${i<events.length-1?'<div class="tl-line"></div>':''}
+    </div>
+    <div class="tl-body">
+      <div class="tl-title">${ev.title}</div>
+      <div class="tl-sub">${ev.sub}</div>
+    </div>
+    <div>
+      <div class="tl-amt" style="color:${ev.type==='venta'?'var(--blue-b)':ev.type==='deuda'?'var(--danger)':'var(--green)'}">${ev.sign}${fmt(ev.amt)}</div>
+      <div class="tl-date">${ev.date.toLocaleDateString('es-PY')}</div>
+    </div>
+  </div>`).join('');
+}
+
+function registrarPagoDesdeExtracto() {
+  closeM('m-extracto');
+  const cli = CLIENTS.find(c=>c.id===activeExtractoCliId);
+  openM('m-recibo');
+  fillReciboSelects();
+  if(cli){
+    setTimeout(()=>{
+      document.getElementById('rcb-cli-sel').value = cli.id;
+      loadReciboCli();
+    },100);
+  }
+}
+
+function genExtractoPDF() {
+  const cli = CLIENTS.find(c=>c.id===activeExtractoCliId);
+  if(!cli){return;}
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm',format:'a4'});
+  const W = doc.internal.pageSize.getWidth();
+  doc.setFillColor(7,11,20); doc.rect(0,0,W,35,'F');
+  doc.setFillColor(30,144,255); doc.rect(0,0,7,35,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(18); doc.setFont('helvetica','bold');
+  doc.text('CV ELECTRÓNICA — EXTRACTO',16,16);
+  doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(100,168,255);
+  doc.text(`Cliente: ${cli.nombre}  |  Tel: ${cli.telefono||'—'}  |  ${new Date().toLocaleDateString('es-PY')}`,16,26);
+  const deudasCli = DEUDAS.filter(d=>d.cliente_id===cli.id);
+  const ventasCli = SALES.filter(s=>s.cliente_nombre===cli.nombre);
+  let y=48;
+  doc.setTextColor(30,144,255); doc.setFontSize(10); doc.setFont('helvetica','bold');
+  doc.text('DEUDAS',16,y); doc.setDrawColor(30,144,255); doc.line(16,y+2,W-16,y+2);
+  y+=10; doc.setTextColor(50,50,50); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  if(deudasCli.length){
+    deudasCli.forEach(d=>{
+      doc.text(d.descripcion,16,y);
+      doc.text(fmt(d.monto),120,y);
+      doc.text(cap(d.estado),160,y);
+      y+=8;
+    });
+  } else { doc.text('Sin deudas registradas',16,y); y+=8; }
+  y+=6;
+  doc.setTextColor(30,144,255); doc.setFontSize(10); doc.setFont('helvetica','bold');
+  doc.text('HISTORIAL DE COMPRAS',16,y); doc.line(16,y+2,W-16,y+2);
+  y+=10; doc.setTextColor(50,50,50); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  if(ventasCli.length){
+    ventasCli.forEach(s=>{
+      doc.text(s.numero_factura,16,y);
+      doc.text(fmt(s.total),80,y);
+      doc.text(s.metodo_pago.substring(0,15),120,y);
+      doc.text(new Date(s.created_at).toLocaleDateString('es-PY'),165,y);
+      y+=8;
+      if(y>270){doc.addPage();y=20;}
+    });
+  } else { doc.text('Sin compras registradas',16,y); }
+  doc.setFillColor(30,144,255); doc.rect(0,280,W,17,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(8);
+  doc.text('CV Electrónica — Extracto generado el '+new Date().toLocaleString('es-PY'), W/2,290,{align:'center'});
+  doc.save(`Extracto-${cli.nombre.replace(/ /g,'_')}.pdf`);
+  toast('📄','Extracto PDF descargado');
+}
+
+// ══ RECIBO DE PAGO ══
+let activeDeudaForRecibo = null;
+
+function openRecibo(deudaId) {
+  activeDeudaForRecibo = deudaId;
+  fillReciboSelects();
+  const deu = DEUDAS.find(d=>d.id===deudaId);
+  if(deu){
+    setTimeout(()=>{
+      document.getElementById('rcb-cli-sel').value = deu.cliente_id;
+      loadReciboCli();
+      setTimeout(()=>{
+        document.getElementById('rcb-deuda-sel').value = deu.id;
+        document.getElementById('rcb-monto').value = deu.saldo_pendiente || deu.monto;
+        updateReciboPreview();
+      },80);
+    },60);
+  }
+  openM('m-recibo');
+}
+
+function fillReciboSelects() {
+  const cliSel = document.getElementById('rcb-cli-sel');
+  cliSel.innerHTML = '<option value="">— elegí cliente —</option>' + CLIENTS.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+}
+
+function loadReciboCli() {
+  const cliId = document.getElementById('rcb-cli-sel').value;
+  const deudaSel = document.getElementById('rcb-deuda-sel');
+  const deudasCli = DEUDAS.filter(d=>String(d.cliente_id)===String(cliId) && d.estado!=='pagado');
+  deudaSel.innerHTML = '<option value="">— todas pendientes —</option>' + deudasCli.map(d=>`<option value="${d.id}">${d.descripcion} — Saldo: ${fmt(d.saldo_pendiente||d.monto)}</option>`).join('');
+  if(activeDeudaForRecibo){
+    const deu = DEUDAS.find(d=>d.id===activeDeudaForRecibo);
+    if(deu && String(deu.cliente_id)===String(cliId)){
+      deudaSel.value = deu.id;
+    }
+  }
+  updateReciboPreview();
+}
+
+function updateReciboPreview() {
+  const cliId = document.getElementById('rcb-cli-sel').value;
+  const monto = +document.getElementById('rcb-monto').value||0;
+  const met = document.getElementById('rcb-met').value;
+  const obs = document.getElementById('rcb-obs').value;
+  const cli = CLIENTS.find(c=>String(c.id)===String(cliId));
+  const rcbBody = document.getElementById('rcb-body');
+  if(!cli || !monto){
+    rcbBody.innerHTML='<span style="color:var(--muted)">Completá los datos para ver el recibo…</span>';
+    return;
+  }
+  const num = 'RCB-'+Date.now().toString().slice(-6);
+  const fecha = new Date().toLocaleDateString('es-PY');
+  rcbBody.innerHTML=`
+  <div class="rcb-row"><span class="lbl">N° Recibo</span><span class="val" style="color:var(--blue-b)">${num}</span></div>
+  <div class="rcb-row"><span class="lbl">Fecha</span><span class="val">${fecha}</span></div>
+  <hr class="rcb-divider">
+  <div class="rcb-row"><span class="lbl">Cliente</span><span class="val">${cli.nombre}</span></div>
+  ${cli.telefono?`<div class="rcb-row"><span class="lbl">Teléfono</span><span class="val">${cli.telefono}</span></div>`:''}
+  <hr class="rcb-divider">
+  <div class="rcb-row"><span class="lbl">Método de pago</span><span class="val">${met}</span></div>
+  ${obs?`<div class="rcb-row"><span class="lbl">Observación</span><span class="val">${obs}</span></div>`:''}
+  <div class="rcb-total-row"><span class="lbl">TOTAL PAGADO</span><span class="val">${fmt(monto)}</span></div>
+  <hr class="rcb-divider">
+  <div style="text-align:center;font-size:10px;color:var(--muted);margin-top:6px">CV Electrónica ⚡ — Recibo válido como comprobante de pago</div>`;
+}
+
+async function genReciboPDF() {
+  const cliId = document.getElementById('rcb-cli-sel').value;
+  const monto = +document.getElementById('rcb-monto').value||0;
+  const met = document.getElementById('rcb-met').value;
+  const obs = document.getElementById('rcb-obs').value;
+  const cli = CLIENTS.find(c=>String(c.id)===String(cliId));
+  if(!cli||!monto){toast('⚠️','Completá cliente y monto');return;}
+  // Marcar deuda como pagada/parcial en Supabase
+  await aplicarPago(cliId, monto);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm',format:[80,120]});
+  const W=80;
+  doc.setFillColor(7,11,20); doc.rect(0,0,W,28,'F');
+  doc.setFillColor(30,144,255); doc.rect(0,0,5,28,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont('helvetica','bold');
+  doc.text('CV ELECTRÓNICA',10,12);
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(100,168,255);
+  doc.text('RECIBO DE PAGO',10,20);
+  const num='RCB-'+Date.now().toString().slice(-6);
+  doc.setTextColor(255,255,255); doc.setFontSize(9); doc.text(num,W-8,12,{align:'right'});
+  let y=36;
+  doc.setTextColor(50,50,50); doc.setFontSize(9); doc.setFont('helvetica','normal');
+  const row=(l,v,vc)=>{doc.setTextColor(100,100,100);doc.text(l,8,y);doc.setTextColor(vc||30,vc?50:50,vc?50:50);doc.text(v,W-8,y,{align:'right'});y+=7;};
+  row('Fecha:',new Date().toLocaleDateString('es-PY'));
+  row('Cliente:',cli.nombre);
+  if(cli.telefono) row('Tel:',cli.telefono);
+  row('Método:',met);
+  if(obs) row('Obs:',obs);
+  y+=3;
+  doc.setFillColor(30,144,255); doc.rect(6,y-4,W-12,12,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(11); doc.setFont('helvetica','bold');
+  doc.text('PAGADO:',10,y+3);
+  doc.text(fmt(monto),W-10,y+3,{align:'right'});
+  y+=16;
+  doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(130,130,130);
+  doc.text('CV Electrónica — Comprobante válido',W/2,y,{align:'center'});
+  doc.save(`Recibo-${cli.nombre.replace(/ /g,'_')}-${num}.pdf`);
+  toast('📄','Recibo PDF descargado');
+  closeM('m-recibo');
+  loadDeudas(); loadClientes();
+}
+
+function enviarReciboWA() {
+  const cliId = document.getElementById('rcb-cli-sel').value;
+  const monto = +document.getElementById('rcb-monto').value||0;
+  const met = document.getElementById('rcb-met').value;
+  const obs = document.getElementById('rcb-obs').value;
+  const cli = CLIENTS.find(c=>String(c.id)===String(cliId));
+  if(!cli||!monto){toast('⚠️','Completá cliente y monto');return;}
+  let tel = (cli.telefono||'').replace(/\D/g,'');
+  if(!tel){toast('⚠️','El cliente no tiene teléfono registrado');return;}
+  if(!tel.startsWith('595')) tel='595'+tel.replace(/^0/,'');
+  const num='RCB-'+Date.now().toString().slice(-6);
+  const fecha=new Date().toLocaleDateString('es-PY');
+  const msg=encodeURIComponent(
+`⚡ *CV ELECTRÓNICA*
+🧾 *RECIBO DE PAGO*
+──────────────────
+📋 N°: ${num}
+📅 Fecha: ${fecha}
+👤 Cliente: ${cli.nombre}
+💳 Método: ${met}
+${obs?'📝 Obs: '+obs+'\n':''}──────────────────
+✅ *TOTAL PAGADO: ${fmt(monto)}*
+──────────────────
+_Gracias por su pago 🙏_`);
+  aplicarPago(cliId, monto).then(()=>{
+    window.open(`https://wa.me/${tel}?text=${msg}`,'_blank');
+    toast('📲','Abriendo WhatsApp...');
+    closeM('m-recibo');
+    loadDeudas(); loadClientes();
+  });
+}
+
+async function aplicarPago(cliId, monto) {
+  // Aplicar pago a las deudas del cliente
+  const deudasCli = DEUDAS.filter(d=>String(d.cliente_id)===String(cliId) && d.estado!=='pagado').sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  let restante = monto;
+  for(const d of deudasCli){
+    if(restante<=0) break;
+    const saldo = Number(d.saldo_pendiente||d.monto);
+    if(restante>=saldo){
+      await db.from('deudas').update({saldo_pendiente:0,estado:'pagado'}).eq('id',d.id);
+      restante-=saldo;
+    } else {
+      await db.from('deudas').update({saldo_pendiente:saldo-restante,estado:'parcial'}).eq('id',d.id);
+      restante=0;
+    }
+  }
+}
+
+function updateBadgesCli() {
+  const nb = document.getElementById('nb-cli');
+  const nd = document.getElementById('nb-deu');
+  if(nb) nb.textContent = CLIENTS.length;
+  if(nd) nd.textContent = DEUDAS.filter(d=>d.estado!=='pagado').length;
+}</script>
 </body>
 </html>
